@@ -2,29 +2,10 @@ package ui
 
 import (
 	"fmt"
-	"log"
 	"github.com/jroimartin/gocui"
 )
 
-func someFunc() {
-	g, err := gocui.NewGui(gocui.OutputNormal)
-	if err != nil {
-		log.Panicln(err)
-	}
-	defer g.Close()
-
-	g.SetManagerFunc(layout)
-
-	if err := g.SetKeybinding("", 'q', gocui.ModNone, quit); err != nil {
-		log.Panicln(err)
-	}
-
-	if err := g.MainLoop(); err != nil && err != gocui.ErrQuit {
-		log.Panicln(err)
-	}
-}
-
-func layout(g *gocui.Gui) error {
+func Layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
 
 	if v, err := g.SetView("pipelines", 0, 0, maxX/2-1, maxY-5); err != nil {
@@ -54,8 +35,4 @@ func layout(g *gocui.Gui) error {
 	}
 
 	return nil
-}
-
-func quit(g *gocui.Gui, v *gocui.View) error {
-	return gocui.ErrQuit
 }

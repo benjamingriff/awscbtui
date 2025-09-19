@@ -1,7 +1,8 @@
 package ui
 
 import (
-	"fmt"
+	"log"
+	"github.com/jroimartin/gocui"
 )
 
 type Config struct {
@@ -9,6 +10,20 @@ type Config struct {
 }
 
 func Run(cfg *Config) error {
-	fmt.Printf("Welcome to %s\n", cfg.Name)
+	g, err := gocui.NewGui(gocui.OutputNormal)
+	if err != nil {
+		log.Panicln(err)
+	}
+	defer g.Close()
+
+	g.SetManagerFunc(Layout)
+
+	if err := g.SetKeybinding("", 'q', gocui.ModNone, Quit); err != nil {
+		log.Panicln(err)
+	}
+
+	if err := g.MainLoop(); err != nil && err != gocui.ErrQuit {
+		log.Panicln(err)
+	}
 	return nil
 }
