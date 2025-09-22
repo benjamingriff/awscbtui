@@ -155,43 +155,43 @@ test/
 
 ```mermaid
 flowchart LR
-  subgraph UI[gocui UI]
-    KB[Keybindings<br/>(keymap.go)]
-    NAV[Navigation<br/>(navigation.go)]
-    REND[Renderers<br/>(render/*.go)]
+  subgraph UI [gocui UI]
+    KB[Keybindings (keymap.go)]
+    NAV[Navigation (navigation.go)]
+    REND[Renderers (render/*)]
     HELP[Help Overlay]
   end
 
-  subgraph STATE[State Layer]
-    S[AppState<br/>(state.go)]
-    RED[Reducer<br/>(reducer.go)]
-    SEL[Selectors<br/>(selectors.go)]
-    INT[Intents<br/>(intents.go)]
-    MSG[Messages<br/>(messages.go)]
+  subgraph STATE [State Layer]
+    S[AppState (state.go)]
+    RED[Reducer (reducer.go)]
+    SEL[Selectors (selectors.go)]
+    INT[Intents (intents.go)]
+    MSG[Messages (messages.go)]
   end
 
-  subgraph JOBS[Async Jobs]
-    DISP[Dispatcher<br/>(dispatcher.go)]
-    TIM[Timers/Auto-refresh<br/>(timers.go)]
-    JMETA[Job Keys/Meta<br/>(types.go)]
+  subgraph JOBS [Async Jobs]
+    DISP[Dispatcher (dispatcher.go)]
+    TIM[Timers (timers.go)]
+    JMETA[Job Meta (types.go)]
   end
 
-  subgraph AWS[AWS Integration]
-    SES[Session/Identity<br/>(session.go)]
-    CB[CodeBuild API<br/>(codebuild.go)]
-    CWL[CloudWatch Logs<br/>(logs.go)]
-    FAKES[Fakes (tests)<br/>(aws/fake/*)]
+  subgraph AWS [AWS Integration]
+    SES[Session (session.go)]
+    CB[CodeBuild (codebuild.go)]
+    CWL[CloudWatch Logs (logs.go)]
+    FAKES[Fakes (aws/fake/*)]
   end
 
-  subgraph UTIL[Utilities]
-    RB[RingBuffer<br/>(util/ringbuffer.go)]
-    BO[Backoff/Jitter<br/>(util/backoff.go)]
-    DEB[Debounce<br/>(util/debounce.go)]
-    CLIP[Clipboard<br/>(util/copy.go)]
+  subgraph UTIL [Utilities]
+    RB[RingBuffer (util/ringbuffer.go)]
+    BO[Backoff (util/backoff.go)]
+    DEB[Debounce (util/debounce.go)]
+    CLIP[Clipboard (util/copy.go)]
   end
 
-  subgraph LOG[Command Log]
-    CMD[CommandLog Buffer<br/>(logging/commandlog.go)]
+  subgraph LOG [Command Log]
+    CMD[CommandLog (logging/commandlog.go)]
   end
 
   %% User input -> intents
@@ -204,26 +204,25 @@ flowchart LR
   RED --> S
   S --> SEL
   SEL --> REND
-  REND -->|pure render| UI
+  REND --> UI
 
   %% Intents that start async work
-  INT -->|dispatch request| DISP
+  INT -->|dispatch| DISP
   TIM -->|tick| DISP
-  DISP -->|uses| JMETA
-  DISP -->|ctx with cancel<br/>backoff/debounce| AWS
+  DISP --> JMETA
+  DISP -->|ctx, backoff, debounce| AWS
 
   %% AWS calls and results
-  AWS -->|DTOs| MSG
-  SES -. provides cfg .-> CB
-  SES -. provides cfg .-> CWL
+  SES -. cfg .-> CB
+  SES -. cfg .-> CWL
   CB --> MSG
   CWL --> MSG
 
   %% Messages back to state/UI
   MSG --> RED
-  MSG --> CMD
-  DISP --> CMD
   INT --> CMD
+  DISP --> CMD
+  MSG --> CMD
 
   %% Utilities used by jobs/UI
   CWL -->|log lines| RB
