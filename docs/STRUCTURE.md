@@ -156,42 +156,42 @@ test/
 ```mermaid
 flowchart LR
   subgraph UI [gocui UI]
-    KB[Keybindings (keymap.go)]
-    NAV[Navigation (navigation.go)]
-    REND[Renderers (render/*)]
+    KB[Keybindings - keymap.go]
+    NAV[Navigation - navigation.go]
+    REND[Renderers - render/*]
     HELP[Help Overlay]
   end
 
   subgraph STATE [State Layer]
-    S[AppState (state.go)]
-    RED[Reducer (reducer.go)]
-    SEL[Selectors (selectors.go)]
-    INT[Intents (intents.go)]
-    MSG[Messages (messages.go)]
+    S[AppState - state.go]
+    RED[Reducer - reducer.go]
+    SEL[Selectors - selectors.go]
+    INT[Intents - intents.go]
+    MSG[Messages - messages.go]
   end
 
   subgraph JOBS [Async Jobs]
-    DISP[Dispatcher (dispatcher.go)]
-    TIM[Timers (timers.go)]
-    JMETA[Job Meta (types.go)]
+    DISP[Dispatcher - dispatcher.go]
+    TIM[Timers - timers.go]
+    JMETA[Job Meta - types.go]
   end
 
   subgraph AWS [AWS Integration]
-    SES[Session (session.go)]
-    CB[CodeBuild (codebuild.go)]
-    CWL[CloudWatch Logs (logs.go)]
-    FAKES[Fakes (aws/fake/*)]
+    SES[Session - session.go]
+    CB[CodeBuild - codebuild.go]
+    CWL[CloudWatch Logs - logs.go]
+    FAKES[Fakes - aws/fake/*]
   end
 
   subgraph UTIL [Utilities]
-    RB[RingBuffer (util/ringbuffer.go)]
-    BO[Backoff (util/backoff.go)]
-    DEB[Debounce (util/debounce.go)]
-    CLIP[Clipboard (util/copy.go)]
+    RB[RingBuffer - util/ringbuffer.go]
+    BO[Backoff - util/backoff.go]
+    DEB[Debounce - util/debounce.go]
+    CLIP[Clipboard - util/copy.go]
   end
 
   subgraph LOG [Command Log]
-    CMD[CommandLog (logging/commandlog.go)]
+    CMD[CommandLog - logging/commandlog.go]
   end
 
   %% User input -> intents
@@ -210,7 +210,7 @@ flowchart LR
   INT -->|dispatch| DISP
   TIM -->|tick| DISP
   DISP --> JMETA
-  DISP -->|ctx, backoff, debounce| AWS
+  DISP --> AWS
 
   %% AWS calls and results
   SES -. cfg .-> CB
@@ -231,10 +231,7 @@ flowchart LR
   UI -. optional .-> CLIP
 
   %% Session changes cancel jobs
-  SES -. profile/region change cancels ctx .-> DISP
-
-  %% Rendering reads state only
-  S --> REND
+  SES -. profile or region change cancels ctx .-> DISP
 
   %% Status bar pulls identity/session
   SES --> UI
