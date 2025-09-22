@@ -242,75 +242,73 @@ flowchart LR
 ```mermaid
 sequenceDiagram
   participant User
-  participant UI as gocui UI<br/>(app.go)
-  participant KM as Keymap<br/>(keymap.go)
-  participant INT as Intent<br/>(intents.go)
-  participant RED as Reducer<br/>(reducer.go)
-  participant S as AppState<br/>(state.go)
-  participant DISP as Dispatcher<br/>(dispatcher.go)
-  participant AWS as AWS Wrappers<br/>(codebuild.go, logs.go)
-  participant MSG as Message<br/>(messages.go)
-  participant R as Renderers<br/>(render/*.go)
+  participant UI as gocui UI - app.go
+  participant KM as Keymap - keymap.go
+  participant INT as Intent - intents.go
+  participant RED as Reducer - reducer.go
+  participant S as AppState - state.go
+  participant DISP as Dispatcher - dispatcher.go
+  participant AWS as AWS Wrappers
+  participant MSG as Message - messages.go
+  participant R as Renderers - render/*
   participant CMD as CommandLog
 
-  User->>UI: keypress (e.g., "r" RefreshBuilds)
+  User->>UI: keypress r RefreshBuilds
   UI->>KM: lookup binding
-  KM->>INT: create RefreshBuilds(project)
-  INT->>RED: handle intent (pure)
-  RED->>S: mutate state (e.g., set loading=true)
-  RED->>CMD: append "intent: RefreshBuilds"
+  KM->>INT: create RefreshBuilds project
+  INT->>RED: handle intent
+  RED->>S: set loading true
+  RED->>CMD: log intent RefreshBuilds
 
-  rect rgba(200,200,255,0.2)
-    INT->>DISP: dispatch job (ctx, jobKey)
-    DISP-->>UI: return immediately (non-blocking)
-    par Worker goroutine
-      DISP->>AWS: ListBuildsForProject + BatchGetBuilds
-      AWS-->>DISP: DTOs ([]Build)
-      DISP->>MSG: BuildsLoaded(project, builds)
-      DISP->>CMD: "AWS: ListBuildsForProject took 120ms"
+  rect rgb(225,235,255)
+    INT->>DISP: dispatch job with ctx and jobKey
+    DISP-->>UI: return immediately
+    par Worker
+      DISP->>AWS: ListBuildsForProject and BatchGetBuilds
+      AWS-->>DISP: builds DTOs
+      DISP->>MSG: BuildsLoaded project builds
+      DISP->>CMD: log AWS call took 120ms
     end
   end
 
   MSG->>RED: apply message
-  RED->>S: update caches (buildsByProject), loading=false
-  RED->>CMD: append "BuildsLoaded ok (n=25)"
+  RED->>S: update builds cache and loading false
+  RED->>CMD: log BuildsLoaded ok
 
-  UI->>R: render pass (projects/builds/status/logs)
-  R-->>UI: write view buffers (pure read from S)
+  UI->>R: render pass projects builds status logs
+  R-->>UI: write views read only on state
 
-  Note over UI,S: UI thread remains single-threaded.<br/>All state mutations via reducer.
+  Note over UI,S: UI thread is single threaded. Only reducer mutates state.
 
-  opt Auto-refresh tick
-    DISP->>DISP: timer fires (15s)
-    DISP->>INT: emit RefreshBuilds(project)
-    INT->>RED: set loading or update lastRequested
-    INT->>DISP: re-dispatch with debounce/backoff
+  opt Auto refresh
+    DISP->>INT: emit RefreshBuilds on timer
+    INT->>RED: update debounce markers
+    INT->>DISP: re dispatch with backoff
   end
 
-  opt Log tailing
-    User->>UI: "t" TailLogs(buildID)
-    UI->>INT: TailLogs(buildID)
-    INT->>RED: set tailing=true; create ring buffer
-    INT->>DISP: start tail worker (1–2s poll)
-    loop every 1–2s
-      DISP->>AWS: GetLogEvents(nextToken)
-      AWS-->>DISP: lines, nextToken
-      DISP->>MSG: LogsAppended(buildID, lines)
-      MSG->>RED: append to ring buffer in state
-      UI->>R: re-render Logs tab
+  opt Tail logs
+    User->>UI: press t TailLogs buildID
+    UI->>INT: TailLogs buildID
+    INT->>RED: set tailing true and init ring buffer
+    INT->>DISP: start tail worker poll 1 to 2s
+    loop every 1 to 2s
+      DISP->>AWS: GetLogEvents with nextToken
+      AWS-->>DISP: lines and nextToken
+      DISP->>MSG: LogsAppended buildID lines
+      MSG->>RED: append to ring buffer
+      UI->>R: re render Logs tab
     end
   end
 
-  opt Context change (profile/region)
-    User->>UI: switch profile/region
-    UI->>INT: ChangeProfile/ChangeRegion
-    INT->>RED: update session target; clear caches
+  opt Profile or region change
+    User->>UI: change profile or region
+    UI->>INT: ChangeProfile or ChangeRegion
+    INT->>RED: update session and clear caches
     DISP->>DISP: cancel all job contexts
-    DISP->>SES: load new config/identity
-    SES-->>DISP: cfg/identity or error
+    DISP->>AWS: reload config and identity
     DISP->>MSG: SessionUpdated or JobError
-    MSG->>RED: update session/error; show toast
-    UI->>R: re-render status bar and panels
+    MSG->>RED: update state and show toast
+    UI->>R: re render
   end
 ```
 
