@@ -2,7 +2,7 @@ package render
 
 import (
 	"fmt"
-	"github.com/jroimartin/gocui"
+	"github.com/awesome-gocui/gocui"
 	"github.com/benjamingriff/awscbtui/pkg/state"
 )
 
