@@ -5,11 +5,7 @@ import (
 )
 
 func main() {
-	cfg := &ui.Config{
-		Name: "awscbtui",
-	}
-
-	if err := ui.Run(cfg); err != nil {
+	if err := ui.Run(); err != nil {
 		panic(err)
 	}
 }

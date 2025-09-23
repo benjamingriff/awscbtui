@@ -3,20 +3,21 @@ package ui
 import (
 	"log"
 	"github.com/jroimartin/gocui"
+	"github.com/benjamingriff/awscbtui/pkg/state"
 )
 
-type Config struct {
-	Name string
-}
-
-func Run(cfg *Config) error {
+func Run() error {
 	g, err := gocui.NewGui(gocui.OutputNormal)
 	if err != nil {
 		log.Panicln(err)
 	}
 	defer g.Close()
 
-	g.SetManagerFunc(Layout)
+ 	s := state.DummyState()
+
+	g.SetManagerFunc(func(g *gocui.Gui) error {
+		return Layout(g, s)
+	})
 
 	if err := g.SetKeybinding("", 'q', gocui.ModNone, Quit); err != nil {
 		log.Panicln(err)
