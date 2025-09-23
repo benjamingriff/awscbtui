@@ -8,6 +8,9 @@ import (
 
 func RenderProjects(v *gocui.View, s *state.AppState) {
 	v.Clear()
+	v.Title = "Projects"
+	v.Wrap = true
+
 	for i, p := range s.Data.Projects {
 		prefix := "  "
 		if i == s.UI.SelectedProject {

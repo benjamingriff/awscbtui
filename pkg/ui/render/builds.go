@@ -8,6 +8,9 @@ import (
 
 func RenderBuilds(v *gocui.View, s *state.AppState) {
 	v.Clear()
+	v.Title = "Builds"
+	v.Wrap = true
+
 	fmt.Fprintln(v, "Hi I'm the builds!")
 	// builds := s.BuildsByProject[projectName]
 	// for i, b := range builds {
