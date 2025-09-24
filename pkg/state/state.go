@@ -24,7 +24,7 @@ type SessionState struct {
 
 
 type UIState struct {
-	FocusedPanel string    // e.g., "projects","builds","bottom","help"
+	FocusedView View
 	ActiveTab    string    // "logs"|"details"|"cmd"
 	SelectedProject int    // index in Projects slice
 	SelectedBuild   int    // index in Builds for selected project
@@ -41,3 +41,12 @@ type DataState struct {
 	BuildPhase map[string]aws.BuildPhase // keyed by buildID
 	// LogTail map[string]*RingBuffer // keyed by buildID
 }
+
+type View string
+
+const (
+	ViewStatus View = "status"
+	ViewProjects View = "projects"
+	ViewBuilds View = "builds"
+	ViewLogs View = "logs"
+)

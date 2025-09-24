@@ -14,7 +14,7 @@ func DummyState() *AppState {
             ExpiresAt: time.Now().Add(1 * time.Hour),
         },
         UI: UIState{
-            FocusedPanel:    "projects",
+            FocusedView:    "projects",
             ActiveTab:       "logs",
             SelectedProject: 0,
             SelectedBuild:   0,
