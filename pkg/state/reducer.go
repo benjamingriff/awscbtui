@@ -1,7 +1,7 @@
 package state
 
 func Reduce(s *AppState, a any) {
-    switch v := a.(type) {
+    switch a.(type) {
     case FocusNext:
         s.UI.FocusedView = nextPanel(s.UI.FocusedView)
     case FocusPrev:
@@ -9,24 +9,32 @@ func Reduce(s *AppState, a any) {
 	}
 }
 
-func nextPanel(p Panel) Panel {
-    switch p {
-    case PanelProjects:
-        return PanelBuilds
-    case PanelBuilds:
-        return PanelBottom
-    default:
-        return PanelProjects
-    }
+func nextPanel(p View) View {
+	switch p {
+	case ViewProjects:
+		return ViewBuilds
+	case ViewBuilds:
+		return ViewLogs
+	case ViewLogs:
+		return ViewStatus
+	case ViewStatus:
+		return ViewProjects
+	default:
+		return ViewProjects
+	}
 }
 
-func prevPanel(p Panel) Panel {
+func prevPanel(p View) View {
     switch p {
-    case PanelBottom:
-        return PanelBuilds
-    case PanelBuilds:
-        return PanelProjects
+    case ViewProjects:
+        return ViewStatus
+    case ViewBuilds:
+        return ViewProjects
+    case ViewLogs:
+        return ViewBuilds
+    case ViewStatus:
+        return ViewLogs
     default:
-        return PanelBottom
+        return ViewProjects
     }
 }
