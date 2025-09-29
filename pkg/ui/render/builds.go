@@ -8,8 +8,19 @@ import (
 
 func RenderBuilds(v *gocui.View, s *state.AppState) {
 	v.Clear()
-	v.Title = "Builds"
+	v.Title = "[2]-Builds"
 	v.Wrap = true
+
+	v.FrameColor = gocui.ColorGreen
+	v.FgColor = gocui.ColorDefault
+	v.SelBgColor = gocui.ColorGreen
+
+	if s.UI.FocusedView == "builds" {
+		v.Highlight = true
+	} else {
+		v.Highlight = false
+	}
+
 
 	fmt.Fprintln(v, "Hi I'm the builds!")
 	// builds := s.BuildsByProject[projectName]

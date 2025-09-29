@@ -8,8 +8,18 @@ import (
 
 func RenderProjects(v *gocui.View, s *state.AppState) {
 	v.Clear()
-	v.Title = "Projects"
+	v.Title = "[1]-Projects"
 	v.Wrap = true
+
+	v.FrameColor = gocui.ColorGreen
+	v.FgColor = gocui.ColorDefault
+	v.SelBgColor = gocui.ColorGreen
+
+	if s.UI.FocusedView == "projects" {
+		v.Highlight = true
+	} else {
+		v.Highlight = false
+	}
 
 	for i, p := range s.Data.Projects {
 		prefix := "  "

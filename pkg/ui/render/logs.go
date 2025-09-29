@@ -8,8 +8,17 @@ import (
 
 func RenderLogs(v *gocui.View, s *state.AppState) {
 	v.Clear()
-	v.Title = "Logs"
+	v.Title = "[3]-Logs"
 	v.Wrap = true
+
+	v.FrameColor = gocui.ColorGreen
+	v.FgColor = gocui.ColorDefault
+	v.SelBgColor = gocui.ColorGreen
+	if s.UI.FocusedView == "logs" {
+		v.Highlight = true
+	} else {
+		v.Highlight = false
+	}
 
 	fmt.Fprintln(v, "This is where the logs live")
 }
