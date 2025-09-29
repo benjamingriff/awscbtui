@@ -23,6 +23,32 @@ func Run() error {
 		log.Panicln(err)
 	}
 
+	if err := g.SetKeybinding(
+		"",
+		'l',
+		gocui.ModNone,
+		func(gg *gocui.Gui, v *gocui.View) error {
+			MoveViewForward(s)
+			gg.Update(func(*gocui.Gui) error { return nil })
+			return nil
+		},
+		); err != nil {
+		return err
+	}
+
+	if err := g.SetKeybinding(
+		"",
+		'h',
+		gocui.ModNone,
+		func(gg *gocui.Gui, v *gocui.View) error {
+			MoveViewBackwards(s)
+			gg.Update(func(*gocui.Gui) error { return nil })
+			return nil
+		},
+		); err != nil {
+		return err
+	}
+
 	if err := g.MainLoop(); err != nil && err != gocui.ErrQuit {
 		log.Panicln(err)
 	}
