@@ -15,16 +15,11 @@ func RenderProjects(v *gocui.View, s *state.AppState) {
 	v.FgColor = gocui.ColorDefault
 	v.SelBgColor = gocui.ColorGreen
 
-	if s.UI.FocusedView == "projects" {
-		v.Highlight = true
-	} else {
-		v.Highlight = false
-	}
-
+	v.Highlight = false
+	prefix := "• "
 	for i, p := range s.Data.Projects {
-		prefix := "  "
-		if i == s.UI.SelectedProject {
-			prefix = "> "
+		if s.UI.FocusedView == "projects" && i == s.UI.SelectedProjectIdx {
+			v.Highlight = true
 		}
 		fmt.Fprintf(v, "%s%s  (%d builds)\n", prefix, p.Name)
 	}

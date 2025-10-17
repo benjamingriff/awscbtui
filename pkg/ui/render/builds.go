@@ -1,7 +1,6 @@
 package render
 
 import (
-	"fmt"
 	"github.com/awesome-gocui/gocui"
 	"github.com/benjamingriff/awscbtui/pkg/state"
 )
@@ -21,12 +20,11 @@ func RenderBuilds(v *gocui.View, s *state.AppState) {
 		v.Highlight = false
 	}
 
-
-	fmt.Fprintln(v, "Hi I'm the builds!")
-	// builds := s.BuildsByProject[projectName]
-	// for i, b := range builds {
+	// for i, b := range s.Data.Builds {
 	// 	sel := " "
-	// 	if i == s.UI.SelectedBuildIndex { sel = ">" }
+	// 	if i == s.UI.SelectedBuildIdx {
+	// 		sel = "> "
+	// 	}
 	// 	fmt.Fprintf(v, "%s %s %-7s %s\n", sel, b.BuildID, b.Status, humanDuration(b.Duration))
 	// }
 }

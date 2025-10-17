@@ -25,9 +25,8 @@ type SessionState struct {
 
 type UIState struct {
 	FocusedView View
-	ActiveTab    string    // "logs"|"details"|"cmd"
-	SelectedProject int    // index in Projects slice
-	SelectedBuild   int    // index in Builds for selected project
+	SelectedProjectIdx int    // index in Projects slice
+	SelectedBuildIdx   int    // index in Builds for selected project
 	FilterText      string
 	ShowHelp        bool
 	// Toasts          []Toast // short transient messages

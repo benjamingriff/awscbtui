@@ -9,7 +9,7 @@ func Quit(g *gocui.Gui, v *gocui.View) error {
 	return gocui.ErrQuit
 }
 
-func MoveViewForward(s *state.AppState)  {
+func MoveViewForwards(s *state.AppState)  {
 	switch s.UI.FocusedView {
 	case "status":
 		s.UI.FocusedView = state.ViewProjects
@@ -22,7 +22,6 @@ func MoveViewForward(s *state.AppState)  {
 	}
 }
 
-
 func MoveViewBackwards(s *state.AppState)  {
 	switch s.UI.FocusedView {
 	case "status":
@@ -33,5 +32,39 @@ func MoveViewBackwards(s *state.AppState)  {
 		s.UI.FocusedView = state.ViewProjects
 	case "logs":
 		s.UI.FocusedView = state.ViewBuilds
+	}
+}
+
+func MoveIdxForwards(s *state.AppState)  {
+	switch s.UI.FocusedView {
+	case "projects":
+		if s.UI.SelectedProjectIdx == len(s.Data.Projects)-1 {
+			s.UI.SelectedProjectIdx = 0
+		} else {
+			s.UI.SelectedProjectIdx++
+		}
+	case "builds":
+		if s.UI.SelectedBuildIdx == len(s.Data.Builds)-1 {
+			s.UI.SelectedBuildIdx = 0
+		} else {
+			s.UI.SelectedBuildIdx++
+		}
+	}
+}
+
+func MoveIdxBackwards(s *state.AppState)  {
+	switch s.UI.FocusedView {
+	case "projects":
+		if s.UI.SelectedProjectIdx == 0 {
+			s.UI.SelectedProjectIdx = len(s.Data.Projects)-1
+		} else {
+			s.UI.SelectedProjectIdx--
+		}
+	case "builds":
+		if s.UI.SelectedBuildIdx == 0 {
+			s.UI.SelectedBuildIdx = len(s.Data.Builds)-1
+		} else {
+			s.UI.SelectedBuildIdx--
+		}
 	}
 }

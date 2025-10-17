@@ -9,15 +9,14 @@ func DummyState() *AppState {
 	return &AppState{
 		Session: SessionState{
 			Profile:   "default",
-			Region:    "us-east-1",
+			Region:    "us-west-2",
 			Identity:  "arn:aws:iam::123456789012:user/test",
 			ExpiresAt: time.Now().Add(1 * time.Hour),
 		},
 		UI: UIState{
 			FocusedView: ViewStatus,
-			ActiveTab:       "status",
-			SelectedProject: 0,
-			SelectedBuild:   0,
+			SelectedProjectIdx: 0,
+			SelectedBuildIdx:   0,
 			FilterText:      "",
 			ShowHelp:        false,
 		},

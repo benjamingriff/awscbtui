@@ -28,7 +28,7 @@ func Run() error {
 		'l',
 		gocui.ModNone,
 		func(gg *gocui.Gui, v *gocui.View) error {
-			MoveViewForward(s)
+			MoveViewForwards(s)
 			gg.Update(func(*gocui.Gui) error { return nil })
 			return nil
 		},
@@ -42,6 +42,32 @@ func Run() error {
 		gocui.ModNone,
 		func(gg *gocui.Gui, v *gocui.View) error {
 			MoveViewBackwards(s)
+			gg.Update(func(*gocui.Gui) error { return nil })
+			return nil
+		},
+		); err != nil {
+		return err
+	}
+
+	if err := g.SetKeybinding(
+		"",
+		'k',
+		gocui.ModNone,
+		func(gg *gocui.Gui, v *gocui.View) error {
+			MoveIdxForwards(s)
+			gg.Update(func(*gocui.Gui) error { return nil })
+			return nil
+		},
+		); err != nil {
+		return err
+	}
+
+	if err := g.SetKeybinding(
+		"",
+		'j',
+		gocui.ModNone,
+		func(gg *gocui.Gui, v *gocui.View) error {
+			MoveIdxBackwards(s)
 			gg.Update(func(*gocui.Gui) error { return nil })
 			return nil
 		},
