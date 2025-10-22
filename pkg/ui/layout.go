@@ -8,9 +8,11 @@ import (
 
 func Layout(g *gocui.Gui, s *state.AppState) error {
 	maxX, maxY := g.Size()
-	statusH := maxY/8
-	logsH:= maxY/2
-	buildsH := maxY - statusH - logsH
+	cmdsH := 2
+	useY := maxY - cmdsH
+	statusH := useY/8
+	logsH:= useY/2
+	buildsH := useY - statusH - logsH
 	split := maxX/3
 
 	if _, err := g.SetView("status", 0, 0, maxX-1, statusH-1, 0); err != nil && err != gocui.ErrUnknownView {
@@ -37,12 +39,20 @@ func Layout(g *gocui.Gui, s *state.AppState) error {
 		render.RenderBuilds(v, s)
 	}
 
-	if _, err := g.SetView("logs", 0, statusH+buildsH, maxX-1, maxY-1, 0); err != nil && err != gocui.ErrUnknownView {
+	if _, err := g.SetView("logs", 0, statusH+buildsH, maxX-1, maxY-cmdsH, 0); err != nil && err != gocui.ErrUnknownView {
 		return err
 	}
 	if v, err := g.View("logs"); err == nil {
 		v.Clear()
 		render.RenderLogs(v, s)
+	}
+
+	if _, err := g.SetView("cmds", 0, statusH+buildsH+logsH, maxX-1, maxY, 0); err != nil && err != gocui.ErrUnknownView {
+		return err
+	}
+	if v, err := g.View("cmds"); err == nil {
+		v.Clear()
+		render.RenderCmds(v, s)
 	}
 
 	return nil

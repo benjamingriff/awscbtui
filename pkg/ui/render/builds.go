@@ -6,16 +6,18 @@ import (
 )
 
 func RenderBuilds(v *gocui.View, s *state.AppState) {
-	v.Clear()
+	v.FrameRunes = []rune{'─', '│', '╭', '╮', '╰', '╯'}
 	v.Title = "[2]-Builds"
 	v.Wrap = true
+	v.Clear()
 
-	v.FrameColor = gocui.ColorGreen
+	v.FrameColor = gocui.ColorDefault
 	v.FgColor = gocui.ColorDefault
 	v.SelBgColor = gocui.ColorGreen
 
 	if s.UI.FocusedView == "builds" {
 		v.Highlight = true
+		v.FrameColor = gocui.ColorGreen
 	} else {
 		v.Highlight = false
 	}

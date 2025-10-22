@@ -35,15 +35,21 @@ func MoveViewBackwards(s *state.AppState)  {
 	}
 }
 
-func MoveIdxForwards(s *state.AppState)  {
+func MoveIdxForwards(s *state.AppState) {
 	switch s.UI.FocusedView {
 	case "projects":
+		if len(s.Data.Projects) == 0 {
+			return
+		}
 		if s.UI.SelectedProjectIdx == len(s.Data.Projects)-1 {
 			s.UI.SelectedProjectIdx = 0
 		} else {
 			s.UI.SelectedProjectIdx++
 		}
 	case "builds":
+		if len(s.Data.Builds) == 0 {
+			return
+		}
 		if s.UI.SelectedBuildIdx == len(s.Data.Builds)-1 {
 			s.UI.SelectedBuildIdx = 0
 		} else {
@@ -52,17 +58,23 @@ func MoveIdxForwards(s *state.AppState)  {
 	}
 }
 
-func MoveIdxBackwards(s *state.AppState)  {
+func MoveIdxBackwards(s *state.AppState) {
 	switch s.UI.FocusedView {
 	case "projects":
+		if len(s.Data.Projects) == 0 {
+			return
+		}
 		if s.UI.SelectedProjectIdx == 0 {
-			s.UI.SelectedProjectIdx = len(s.Data.Projects)-1
+			s.UI.SelectedProjectIdx = len(s.Data.Projects) - 1
 		} else {
 			s.UI.SelectedProjectIdx--
 		}
 	case "builds":
+		if len(s.Data.Builds) == 0 {
+			return
+		}
 		if s.UI.SelectedBuildIdx == 0 {
-			s.UI.SelectedBuildIdx = len(s.Data.Builds)-1
+			s.UI.SelectedBuildIdx = len(s.Data.Builds) - 1
 		} else {
 			s.UI.SelectedBuildIdx--
 		}

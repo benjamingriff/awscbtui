@@ -7,21 +7,27 @@ import (
 )
 
 func RenderProjects(v *gocui.View, s *state.AppState) {
-	v.Clear()
+	v.FrameRunes = []rune{'─', '│', '╭', '╮', '╰', '╯'}
 	v.Title = "[1]-Projects"
-	v.Wrap = true
-
-	v.FrameColor = gocui.ColorGreen
+	v.Wrap = false
+	v.FrameColor = gocui.ColorDefault
 	v.FgColor = gocui.ColorDefault
 	v.SelBgColor = gocui.ColorGreen
+	v.SelFgColor = gocui.ColorBlack
 
-	v.Highlight = false
-	prefix := "• "
-	for i, p := range s.Data.Projects {
-		if s.UI.FocusedView == "projects" && i == s.UI.SelectedProjectIdx {
-			v.Highlight = true
-		}
-		fmt.Fprintf(v, "%s%s  (%d builds)\n", prefix, p.Name)
+	v.Highlight = (s.UI.FocusedView == state.ViewProjects)
+
+	v.Clear()
+	for _, p := range s.Data.Projects {
+		fmt.Fprintf(v, "%s  (%d builds)\n", p.Name, len(s.Data.Projects))
+		// fmt.Fprintf(v, "%s%s  (%d builds)\n", prefix, p.Name)
+	}
+
+	if v.Highlight {
+		v.FrameColor = gocui.ColorGreen
+		idx := s.UI.SelectedProjectIdx
+		_, _ = ensureVisible(v, idx, len(s.Data.Projects))
+	} else {
+		_ = v.SetCursor(0, 0)
 	}
 }
-
