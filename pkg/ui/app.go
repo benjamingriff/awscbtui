@@ -19,7 +19,14 @@ func Run() error {
 		return Layout(g, s)
 	})
 
-	if err := g.SetKeybinding("", 'q', gocui.ModNone, Quit); err != nil {
+	if err := g.SetKeybinding(
+		"",
+		'q',
+		gocui.ModNone,
+		func(gg *gocui.Gui, v *gocui.View) error {
+			return Quit(gg, v, s)
+		},
+		); err != nil {
 		log.Panicln(err)
 	}
 
@@ -68,6 +75,19 @@ func Run() error {
 		gocui.ModNone,
 		func(gg *gocui.Gui, v *gocui.View) error {
 			MoveIdxBackwards(s)
+			gg.Update(func(*gocui.Gui) error { return nil })
+			return nil
+		},
+		); err != nil {
+		return err
+	}
+
+	if err := g.SetKeybinding(
+		"",
+		'?',
+		gocui.ModNone,
+		func(gg *gocui.Gui, v *gocui.View) error {
+			RenderHelp(gg, s)
 			gg.Update(func(*gocui.Gui) error { return nil })
 			return nil
 		},
