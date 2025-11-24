@@ -7,12 +7,11 @@ import (
 	"time"
 	sdkaws "github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/service/codebuild"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
 
 )
 
-func _main() {
+func main() {
 	ctx := context.Background()
 
 	var opts []func(*config.LoadOptions) error
@@ -38,19 +37,4 @@ func _main() {
 	fmt.Printf("Account: %s\n", sdkaws.ToString(idOut.Account))
 	fmt.Printf("ARN: %s\n", sdkaws.ToString(idOut.Arn))
 	fmt.Printf("Creds expire: %s\n\n", exp)
-
-	// CodeBuild projects (first page)
-	cb := codebuild.NewFromConfig(cfg)
-	out, err := cb.ListProjects(ctx, &codebuild.ListProjectsInput{})
-	if err != nil {
-		log.Fatalf("list projects: %v", err)
-	}
-	fmt.Printf("Projects (showing up to 20):\n")
-	for i, name := range out.Projects {
-		if i >= 20 {
-			fmt.Println("(more available...)")
-			break
-		}
-		fmt.Printf("%2d. %s\n", i+1, name)
-	}
 }
