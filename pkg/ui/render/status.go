@@ -21,5 +21,7 @@ func RenderStatus(v *gocui.View, s *state.AppState) {
 		v.FrameColor = gocui.ColorGreen
 	}
 
-	fmt.Fprintln(v, "AWS accout status")
+	if s.Session.Profile != "" {
+		fmt.Fprintln(v, "Profile:", s.Session.Profile)
+	} 
 }

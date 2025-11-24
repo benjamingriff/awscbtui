@@ -1,5 +1,18 @@
 package aws
 
+import (
+	"time"
+)
+
+type SessionInfo struct {
+  Profile   string
+  Region    string
+  AccountID string
+  ARN       string
+  ExpiresAt *time.Time
+  ErrorHint string
+}
+
 type Project struct {
 	Name string
 }

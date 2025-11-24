@@ -9,13 +9,21 @@ import (
 func Layout(g *gocui.Gui, s *state.AppState) error {
 	maxX, maxY := g.Size()
 	cmdsH := 2
-	useY := maxY - cmdsH
+  useY := maxY - cmdsH
+	useYF := float64(useY)
 	statusH := useY/8
-	logsH:= useY/2
+
+	var logsH int
+	if s.UI.FocusedView == state.ViewLogs {
+		logsH = int(useYF * 0.75) 
+	} else {
+		logsH = int(useYF / 5)
+	}
+
 	buildsH := useY - statusH - logsH
 	split := maxX/3
 
-	if _, err := g.SetView("status", 0, 0, maxX-1, statusH-1, 0); err != nil && err != gocui.ErrUnknownView {
+	if _, err := g.SetView("status", 0, 0, split-1, statusH-1, 0); err != nil && err != gocui.ErrUnknownView {
 		return err
 	}
 	if v, err := g.View("status"); err == nil {
@@ -31,7 +39,7 @@ func Layout(g *gocui.Gui, s *state.AppState) error {
 		render.RenderProjects(v, s)
 	}
 
-	if _, err := g.SetView("builds", split, statusH, maxX-1, buildsH+statusH-1, 0); err != nil && err != gocui.ErrUnknownView {
+	if _, err := g.SetView("builds", split, 0, maxX-1, buildsH+statusH-1, 0); err != nil && err != gocui.ErrUnknownView {
 		return err
 	}
 	if v, err := g.View("builds"); err == nil {
@@ -53,6 +61,22 @@ func Layout(g *gocui.Gui, s *state.AppState) error {
 	if v, err := g.View("cmds"); err == nil {
 		v.Clear()
 		render.RenderCmds(v, s)
+	}
+
+	if s.UI.ShowHelp {
+		if _, err := g.SetView("help", maxX/4, maxY/6, (maxX/4)*3, (maxY/6)*5, 0); err != nil && err != gocui.ErrUnknownView {
+			return err
+		}
+		if v, err := g.View("help"); err == nil {
+			v.Clear()
+			render.RenderHelp(v, s)
+		}
+	} else {
+		if v, _ := g.View("help"); v != nil {
+			if err := g.DeleteView("help"); err != nil {
+				return err
+			}
+		}
 	}
 
 	return nil

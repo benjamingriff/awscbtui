@@ -1,22 +1,34 @@
 package state
 
 type Intent interface {
-	Name() string
+	IntentName() string
 }
 
-type FocusNext struct{}
+type LoadSession struct{}
+func (LoadSession) IntentName() string { return "LoadSession" }
 
-func (FocusNext) Name() string {
-	return "FocusNext"
+type ViewNext struct{}
+func (ViewNext) IntentName() string { return "ViewNext" }
+
+type ViewPrev struct{}
+func (ViewPrev) IntentName() string {
+	return "ViewPrev"
 }
 
-type FocusPrev struct{}
+type IdxNext struct{}
+func (IdxNext) IntentName() string { return "IdxNext" }
 
-func (FocusPrev) Name() string {
-	return "FocusPrev"
+type IdxPrev struct{}
+func (IdxPrev) IntentName() string {
+	return "IdxPrev"
 }
 
-type MoveFocus struct {
-    View View
-    Delta int
+type RenderHelp struct{}
+func (RenderHelp) IntentName() string {
+	return "RenderHelp"
+}
+
+type Quit struct{}
+func (Quit) IntentName() string {
+	return "Quit"
 }
