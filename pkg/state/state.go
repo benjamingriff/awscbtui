@@ -2,15 +2,14 @@ package state
 
 import (
 	"time"
-	"github.com/benjamingriff/awscbtui/pkg/aws"
 )
 func DummyState() AppState {
 	s := NewAppState()
-	s.Data.Projects = []aws.Project{
+	s.Data.Projects = []Project{
 		{Name: "proj-alpha"},
 		{Name: "proj-beta"},
 	}
-	s.Data.Builds["proj-alpha"] = []aws.Build{
+	s.Data.Builds["proj-alpha"] = []Build{
 		{
 			ID:        "alpha-001",
 		},
@@ -18,7 +17,7 @@ func DummyState() AppState {
 			ID:        "alpha-002",
 		},
 	}
-	s.Data.Builds["proj-beta"] = []aws.Build{
+	s.Data.Builds["proj-beta"] = []Build{
 		{
 			ID:        "beta-001",
 		},
@@ -46,9 +45,9 @@ func NewAppState() AppState {
 			Loading: false,
 		},
 		Data: DataState{
-			Projects:   make([]aws.Project, 0),
-			Builds:     make(map[string][]aws.Build),
-			BuildPhase: make(map[string]aws.BuildPhase),
+			Projects:   make([]Project, 0),
+			Builds:     make(map[string][]Build),
+			BuildPhase: make(map[string]BuildPhase),
 			// LogTail: make(map[string]*RingBuffer),
 		},
 	}
@@ -91,9 +90,9 @@ type UIState struct {
 }
 
 type DataState struct {
-	Projects []aws.Project
-	Builds map[string][]aws.Build
-	BuildPhase map[string]aws.BuildPhase // keyed by buildID
+	Projects []Project
+	Builds map[string][]Build
+	BuildPhase map[string]BuildPhase // keyed by buildID
 	// LogTail map[string]*RingBuffer // keyed by buildID
 }
 
