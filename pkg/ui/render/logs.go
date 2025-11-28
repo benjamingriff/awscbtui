@@ -1,7 +1,6 @@
 package render
 
 import (
-	"fmt"
 	"github.com/awesome-gocui/gocui"
 	"github.com/benjamingriff/awscbtui/pkg/state"
 )
@@ -21,6 +20,4 @@ func RenderLogs(v *gocui.View, s *state.AppState) {
 	} else {
 		v.Highlight = false
 	}
-
-	fmt.Fprintln(v, "This is where the logs live")
 }

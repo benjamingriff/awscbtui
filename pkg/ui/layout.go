@@ -6,15 +6,15 @@ import (
 	"github.com/benjamingriff/awscbtui/pkg/state"
 )
 
-func Layout(g *gocui.Gui, s *state.AppState) error {
+func Layout(g *gocui.Gui, app *App) error {
 	maxX, maxY := g.Size()
 	cmdsH := 2
-  useY := maxY - cmdsH
+	useY := maxY - cmdsH
 	useYF := float64(useY)
 	statusH := useY/8
 
 	var logsH int
-	if s.UI.FocusedView == state.ViewLogs {
+	if app.state.UI.FocusedView == state.ViewLogs {
 		logsH = int(useYF * 0.75) 
 	} else {
 		logsH = int(useYF / 5)
@@ -23,36 +23,53 @@ func Layout(g *gocui.Gui, s *state.AppState) error {
 	buildsH := useY - statusH - logsH
 	split := maxX/3
 
+	focusedName := getCurrentViewName(g)
+
 	if _, err := g.SetView("status", 0, 0, split-1, statusH-1, 0); err != nil && err != gocui.ErrUnknownView {
 		return err
 	}
 	if v, err := g.View("status"); err == nil {
+		if app.state.UI.FocusedView == state.ViewStatus {
+			_, _ = g.SetCurrentView("status")
+		}
 		v.Clear()
-		render.RenderStatus(v, s)
+		render.RenderStatus(v, &app.state, focusedName)
 	}
 
 	if _, err := g.SetView("projects", 0, statusH, split-1, buildsH+statusH-1, 0); err != nil && err != gocui.ErrUnknownView {
 		return err
 	}
 	if v, err := g.View("projects"); err == nil {
+		if app.state.UI.FocusedView == state.ViewProjects {
+			_, _ = g.SetCurrentView("projects")
+		}
 		v.Clear()
-		render.RenderProjects(v, s)
+		render.RenderProjects(v, &app.state)
 	}
 
 	if _, err := g.SetView("builds", split, 0, maxX-1, buildsH+statusH-1, 0); err != nil && err != gocui.ErrUnknownView {
 		return err
 	}
 	if v, err := g.View("builds"); err == nil {
+		if app.state.UI.FocusedView == state.ViewBuilds {
+			_, _ = g.SetCurrentView("builds")
+		}
 		v.Clear()
-		render.RenderBuilds(v, s)
+		render.RenderBuilds(v, &app.state)
 	}
 
 	if _, err := g.SetView("logs", 0, statusH+buildsH, maxX-1, maxY-cmdsH, 0); err != nil && err != gocui.ErrUnknownView {
 		return err
 	}
+	if err := bindKeymaps(g, "logs", KeymapSpecial(app)); err != nil {
+		return err
+	}
 	if v, err := g.View("logs"); err == nil {
+		if app.state.UI.FocusedView == state.ViewLogs {
+			_, _ = g.SetCurrentView("logs")
+		}
 		v.Clear()
-		render.RenderLogs(v, s)
+		render.RenderLogs(v, &app.state)
 	}
 
 	if _, err := g.SetView("cmds", 0, statusH+buildsH+logsH, maxX-1, maxY, 0); err != nil && err != gocui.ErrUnknownView {
@@ -60,16 +77,19 @@ func Layout(g *gocui.Gui, s *state.AppState) error {
 	}
 	if v, err := g.View("cmds"); err == nil {
 		v.Clear()
-		render.RenderCmds(v, s)
+		render.RenderCmds(v, &app.state)
 	}
 
-	if s.UI.ShowHelp {
+	if app.state.UI.ShowHelp {
 		if _, err := g.SetView("help", maxX/4, maxY/6, (maxX/4)*3, (maxY/6)*5, 0); err != nil && err != gocui.ErrUnknownView {
 			return err
 		}
 		if v, err := g.View("help"); err == nil {
+			if app.state.UI.ShowHelp {
+				_, _ = g.SetCurrentView("help")
+			}
 			v.Clear()
-			render.RenderHelp(v, s)
+			render.RenderHelp(v, &app.state)
 		}
 	} else {
 		if v, _ := g.View("help"); v != nil {
@@ -80,4 +100,15 @@ func Layout(g *gocui.Gui, s *state.AppState) error {
 	}
 
 	return nil
+}
+
+func getCurrentViewName(g *gocui.Gui) string {
+	cv := g.CurrentView()
+	var focusedName string
+	if cv != nil {
+		focusedName = cv.Name()
+	} else {
+		focusedName = "" 
+	}
+	return focusedName
 }

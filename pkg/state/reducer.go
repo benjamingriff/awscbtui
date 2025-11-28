@@ -25,6 +25,8 @@ func ReduceMessage(s *AppState, m Message) []Effect {
 	switch v := m.(type) {
 	case SessionLoaded:
 		return reduceSessionLoaded(s, v)
+	case ProjectsLoaded:
+		return reduceProjectsLoaded(s, v)
 	default:
 		return nil
 	}

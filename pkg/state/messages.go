@@ -10,3 +10,8 @@ type SessionLoaded struct {
 func (SessionLoaded) MessageName() string { return "SessionLoaded" }
 
 type SessionError struct{ Err error }
+
+type ProjectsLoaded struct {
+  Projects []Project
+}
+func (ProjectsLoaded) MessageName() string { return "ProjectsLoaded" }

@@ -3,30 +3,6 @@ package state
 import (
 	"time"
 )
-func DummyState() AppState {
-	s := NewAppState()
-	s.Data.Projects = []Project{
-		{Name: "proj-alpha"},
-		{Name: "proj-beta"},
-	}
-	s.Data.Builds["proj-alpha"] = []Build{
-		{
-			ID:        "alpha-001",
-		},
-		{
-			ID:        "alpha-002",
-		},
-	}
-	s.Data.Builds["proj-beta"] = []Build{
-		{
-			ID:        "beta-001",
-		},
-		{
-			ID:        "beta-002",
-		},
-	}
-	return s
-}
 
 func NewAppState() AppState {
 	return AppState{
@@ -38,8 +14,8 @@ func NewAppState() AppState {
 		},
 		UI: UIState{
 			FocusedView:        ViewStatus,
-			SelectedProjectIdx: 0,
-			SelectedBuildIdx:   0,
+			FocusedProjectIdx: 0,
+			FocusedBuildIdx:   0,
 			FilterText:         "",
 			ShowHelp:           false,
 			Loading: false,
@@ -80,7 +56,9 @@ const (
 
 type UIState struct {
 	FocusedView View
+	FocusedProjectIdx int
 	SelectedProjectIdx int
+	FocusedBuildIdx int
 	SelectedBuildIdx int
 	FilterText string
 	ShowHelp bool
@@ -103,4 +81,5 @@ const (
 	ViewProjects View = "projects"
 	ViewBuilds View = "builds"
 	ViewLogs View = "logs"
+	ViewHelp View = "help"
 )

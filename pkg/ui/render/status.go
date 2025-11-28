@@ -6,7 +6,7 @@ import (
 	"github.com/benjamingriff/awscbtui/pkg/state"
 )
 
-func RenderStatus(v *gocui.View, s *state.AppState) {
+func RenderStatus(v *gocui.View, s *state.AppState, focusedName string) {
 	v.FrameRunes = []rune{'─', '│', '╭', '╮', '╰', '╯'}
 	v.Title = "[0]-Status"
 	v.Wrap = false
@@ -23,5 +23,9 @@ func RenderStatus(v *gocui.View, s *state.AppState) {
 
 	if s.Session.Profile != "" {
 		fmt.Fprintln(v, "Profile:", s.Session.Profile)
-	} 
+	} else {
+		fmt.Fprintln(v, "Profile:")
+	}
+
+	fmt.Fprintln(v, "Current View:", focusedName)
 }

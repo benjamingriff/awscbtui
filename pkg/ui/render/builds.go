@@ -24,7 +24,7 @@ func RenderBuilds(v *gocui.View, s *state.AppState) {
 
 	// for i, b := range s.Data.Builds {
 	// 	sel := " "
-	// 	if i == s.UI.SelectedBuildIdx {
+	// 	if i == s.UI.FocusedBuildIdx {
 	// 		sel = "> "
 	// 	}
 	// 	fmt.Fprintf(v, "%s %s %-7s %s\n", sel, b.BuildID, b.Status, humanDuration(b.Duration))

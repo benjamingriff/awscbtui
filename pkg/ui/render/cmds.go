@@ -14,12 +14,8 @@ func RenderCmds(v *gocui.View, s *state.AppState) {
 	v.FgColor = gocui.ColorBlue
 	
 	cmds := []string{
-		"Command: <space>",
-		"Command: <space>",
-		"Command: <space>",
-		"Command: <space>",
-		"Command: <space>",
-		"Command: <space>",
+		"Do Something: <space>",
+		"Keybindings: ?",
 	}
 
 	cmdString := strings.Join(cmds, " | ")

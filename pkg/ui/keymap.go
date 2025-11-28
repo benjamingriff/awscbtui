@@ -5,62 +5,55 @@ import (
 	"github.com/benjamingriff/awscbtui/pkg/state"
 )
 
-func bindKeys(g *gocui.Gui, app *App) error {
-	if err := g.SetKeybinding("", 'q', gocui.ModNone, func(*gocui.Gui, *gocui.View) error {
-		app.emit(state.Quit{})
-		return nil
-	}); err != nil {
-		return err
-	}
+type Binding struct {
+	Rune rune
+	Key gocui.Key
+	Mod gocui.Modifier
+	Handler func(*gocui.Gui, *gocui.View) error
+	Help string
+}
 
-	if err := g.SetKeybinding("", 'l', gocui.ModNone, func(*gocui.Gui, *gocui.View) error {
-		app.emit(state.ViewNext{})
-		return nil
-	}); err != nil {
-		return err
-	}
+type Keymap struct {
+	Bindings []Binding
+}
 
-	if err := g.SetKeybinding("", 'h', gocui.ModNone, func(*gocui.Gui, *gocui.View) error {
-		app.emit(state.ViewPrev{})
+func intentHandler(app *App, in state.Intent) func(*gocui.Gui, *gocui.View) error {
+	return func(*gocui.Gui, *gocui.View) error {
+		app.emit(in)
 		return nil
-	}); err != nil {
-		return err
 	}
+}
 
-	if err := g.SetKeybinding("", 'j', gocui.ModNone, func(*gocui.Gui, *gocui.View) error {
-		app.emit(state.IdxNext{})
-		return nil
-	}); err != nil {
-		return err
-	}
+func KeymapDefault(app *App) Keymap {
+  return Keymap{Bindings: []Binding{
+		{Rune: 'h', Mod: gocui.ModNone, Handler: intentHandler(app, state.ViewPrev{}), Help: "prev"},
+    {Rune: 'j', Mod: gocui.ModNone, Handler: intentHandler(app, state.IdxNext{}), Help: "down"},
+    {Rune: 'k', Mod: gocui.ModNone, Handler: intentHandler(app, state.IdxPrev{}), Help: "up"},
+		{Rune: 'l', Mod: gocui.ModNone, Handler: intentHandler(app, state.ViewNext{}), Help: "next"},
+    {Rune: 'q', Mod: gocui.ModNone, Handler: intentHandler(app, state.Quit{}) , Help: "quit"},
+    {Rune: '?', Mod: gocui.ModNone, Handler: intentHandler(app, state.RenderHelp{}) , Help: "help"},
+  }}
+}
 
-	if err := g.SetKeybinding("", 'k', gocui.ModNone, func(*gocui.Gui, *gocui.View) error {
-		app.emit(state.IdxPrev{})
-		return nil
-	}); err != nil {
-		return err
-	}
 
-	if err := g.SetKeybinding("", '?', gocui.ModNone, func(*gocui.Gui, *gocui.View) error {
-		app.emit(state.RenderHelp{})
-		return nil
-	}); err != nil {
-		return err
-	}
-	// // refresh based on focus
-	// if err := g.SetKeybinding("", 'r', gocui.ModNone, func(*gocui.Gui, *gocui.View) error {
-	// 	switch app.State.FocusedPanel {
-	// 	case state.PanelProjects:
-	// 		app.emit(state.RefreshProjects{})
-	// 	case state.PanelBuilds:
-	// 		if p := selectors.CurrentProject(app.State); p != "" {
-	// 			app.emit(state.RefreshBuilds{Project: p})
-	// 		}
-	// 	}
-	// 	return nil
-	// }); err != nil {
-	// 	return err
-	// }
+func KeymapSpecial(app *App) Keymap {
+  return Keymap{Bindings: []Binding{
+    {Key: gocui.KeySpace, Mod: gocui.ModNone, Handler: intentHandler(app, state.RenderHelp{}) , Help: "select"},
+  }}
+}
 
-	return nil
+func bindKeymaps(g *gocui.Gui, view string, keymap Keymap) error {
+  for _, b := range keymap.Bindings {
+    switch {
+    case b.Rune != 0:
+      if err := g.SetKeybinding(view, b.Rune, b.Mod, b.Handler); err != nil {
+        return err
+      }
+    default:
+      if err := g.SetKeybinding(view, b.Key, b.Mod, b.Handler); err != nil {
+        return err
+      }
+    }
+  }
+  return nil
 }

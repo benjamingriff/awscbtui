@@ -42,19 +42,19 @@ func reduceIdxNext(s *AppState) []Effect {
 		if len(s.Data.Projects) == 0 {
 			return nil
 		}
-		if s.UI.SelectedProjectIdx == len(s.Data.Projects)-1 {
-			s.UI.SelectedProjectIdx = 0
+		if s.UI.FocusedProjectIdx == len(s.Data.Projects)-1 {
+			s.UI.FocusedProjectIdx = 0
 		} else {
-			s.UI.SelectedProjectIdx++
+			s.UI.FocusedProjectIdx++
 		}
 	case "builds":
 		if len(s.Data.Builds) == 0 {
 			return nil
 		}
-		if s.UI.SelectedBuildIdx == len(s.Data.Builds)-1 {
-			s.UI.SelectedBuildIdx = 0
+		if s.UI.FocusedBuildIdx == len(s.Data.Builds)-1 {
+			s.UI.FocusedBuildIdx = 0
 		} else {
-			s.UI.SelectedBuildIdx++
+			s.UI.FocusedBuildIdx++
 		}
 	}
 	return nil
@@ -66,19 +66,19 @@ func reduceIdxPrev(s *AppState) []Effect {
 		if len(s.Data.Projects) == 0 {
 			return nil
 		}
-		if s.UI.SelectedProjectIdx == 0 {
-			s.UI.SelectedProjectIdx = len(s.Data.Projects) - 1
+		if s.UI.FocusedProjectIdx == 0 {
+			s.UI.FocusedProjectIdx = len(s.Data.Projects) - 1
 		} else {
-			s.UI.SelectedProjectIdx--
+			s.UI.FocusedProjectIdx--
 		}
 	case "builds":
 		if len(s.Data.Builds) == 0 {
 			return nil
 		}
-		if s.UI.SelectedBuildIdx == 0 {
-			s.UI.SelectedBuildIdx = len(s.Data.Builds) - 1
+		if s.UI.FocusedBuildIdx == 0 {
+			s.UI.FocusedBuildIdx = len(s.Data.Builds) - 1
 		} else {
-			s.UI.SelectedBuildIdx--
+			s.UI.FocusedBuildIdx--
 		}
 	}
 	return nil

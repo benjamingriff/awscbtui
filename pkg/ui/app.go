@@ -12,7 +12,7 @@ type App struct {
 	gui       *gocui.Gui
 	ctx       context.Context
 	cancel    context.CancelFunc
-	State     state.AppState
+	state     state.AppState
 	intentCh  chan state.Intent
 	msgCh     chan state.Message
 	disp      *jobs.Dispatcher
@@ -24,28 +24,27 @@ func Run() error {
 		log.Panicln(err)
 	}
 	defer g.Close()
-	
+
 
 	ctx, cancel := context.WithCancel(context.Background())
-		defer cancel()
+	defer cancel()
 
 	app := &App{
-			gui:      g,
-			ctx:      ctx,
-			cancel:   cancel,
-			// State:    state.NewAppState(),
-			State:    state.DummyState(),
-			intentCh: make(chan state.Intent, 64),
-			msgCh:    make(chan state.Message, 64),
-		}
+		gui:      g,
+		ctx:      ctx,
+		cancel:   cancel,
+		state:    state.NewAppState(),
+		intentCh: make(chan state.Intent, 64),
+		msgCh:    make(chan state.Message, 64),
+	}
 
 	app.disp = jobs.NewDispatcher(app.msgCh)
 
 	g.SetManagerFunc(func(g *gocui.Gui) error {
-		return Layout(g, &app.State)
+		return Layout(g, app)
 	})
 
-if err := bindKeys(g, app); err != nil {
+	if err := bindKeymaps(g, "", KeymapDefault(app)); err != nil {
 		return err
 	}
 
@@ -63,11 +62,11 @@ func (a *App) loop() {
 	for {
 		select {
 		case intent := <-a.intentCh:
-			effects := state.ReduceIntent(&a.State, intent)
+			effects := state.ReduceIntent(&a.state, intent)
 			a.runEffects(effects)
 			a.requestRender()
 		case msg := <-a.msgCh:
-			state.ReduceMessage(&a.State, msg)
+			state.ReduceMessage(&a.state, msg)
 			a.requestRender()
 		case <-a.ctx.Done():
 			return
@@ -88,7 +87,7 @@ func (a *App) runEffects(effects []state.Effect) error {
 			a.disp.FetchProjects(a.ctx,)
 		case state.CloseProgram:
 			// a.disp.CancelAll() // optional: stop workers
-			a.cancel() // stop app loop
+			a.cancel()
 			a.gui.Update(func(g *gocui.Gui) error { return gocui.ErrQuit })
 		}
 	}

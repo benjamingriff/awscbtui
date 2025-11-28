@@ -15,7 +15,7 @@ type SessionClient struct{}
 func NewSessionClient() *SessionClient { return &SessionClient{} }
 
 // func (s *SessionClient) LoadSession(ctx context.Context, profile, region string) (state.SessionState, error) {
-func (s *SessionClient) LoadSession(ctx context.Context) (state.SessionInfo, error) {
+func (s *SessionClient) LoadSession(ctx context.Context) (state.SessionInfo, sdkaws.Config, error) {
   opts := []func(*config.LoadOptions) error{}
   // if profile != "" {
   //   opts = append(opts, config.WithSharedConfigProfile(profile))
@@ -60,7 +60,7 @@ func (s *SessionClient) LoadSession(ctx context.Context) (state.SessionInfo, err
     ARN:       sdkaws.ToString(idOut.Arn),
     ExpiresAt: expPtr,
     ErrorHint: "",
-  }, nil
+  }, cfg, nil
 }
 
 func profileFromConfig() string {

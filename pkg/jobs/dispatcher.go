@@ -1,15 +1,17 @@
-package jobs 
+package jobs
 
 import (
 	"context"
-	"github.com/benjamingriff/awscbtui/pkg/state"
+
 	"github.com/benjamingriff/awscbtui/pkg/aws"
+	"github.com/benjamingriff/awscbtui/pkg/state"
 )
 
 type Dispatcher struct {
 	msgCh   chan<- state.Message
 	inflight map[jobKey]context.CancelFunc
 	sesh SessionAPI
+	cb CodeBuildAPI
 }
 
 func NewDispatcher(
@@ -28,7 +30,7 @@ func (d *Dispatcher) FetchProjects(ctx context.Context) error {
 
 func (d *Dispatcher) DispatchLoadSession(ctx context.Context) {
   go func() {
-    info, _ := d.sesh.LoadSession(ctx)
+    info, cfg, _ := d.sesh.LoadSession(ctx)
     // if err != nil {
     //   d.msgCh <- state.JobError{
     //     Key:      "session:load",
@@ -39,5 +41,9 @@ func (d *Dispatcher) DispatchLoadSession(ctx context.Context) {
     //   return
     // }
     d.msgCh <- state.SessionLoaded{SessionInfo: info}
+
+		d.cb = aws.NewCodeBuildClient(cfg)
+		projects, _ := d.cb.ListProjects(ctx)
+    d.msgCh <- state.ProjectsLoaded{Projects: projects}
   }()
 }
