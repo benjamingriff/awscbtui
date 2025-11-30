@@ -43,6 +43,9 @@ func Layout(g *gocui.Gui, app *App) error {
 		if app.state.UI.FocusedView == state.ViewProjects {
 			_, _ = g.SetCurrentView("projects")
 		}
+		if err := bindKeymaps(g, "projects", KeymapProjects(app)); err != nil {
+			return err
+		}
 		v.Clear()
 		render.RenderProjects(v, &app.state)
 	}
@@ -59,9 +62,6 @@ func Layout(g *gocui.Gui, app *App) error {
 	}
 
 	if _, err := g.SetView("logs", 0, statusH+buildsH, maxX-1, maxY-cmdsH, 0); err != nil && err != gocui.ErrUnknownView {
-		return err
-	}
-	if err := bindKeymaps(g, "logs", KeymapSpecial(app)); err != nil {
 		return err
 	}
 	if v, err := g.View("logs"); err == nil {
