@@ -27,6 +27,8 @@ func ReduceMessage(s *AppState, m Message) []Effect {
 		return reduceSessionLoaded(s, v)
 	case ProjectsLoaded:
 		return reduceProjectsLoaded(s, v)
+	case BuildIdsLoaded:
+		return reduceBuildIdsLoaded(s, v)
 	case BuildsLoaded:
 		return reduceBuildsLoaded(s, v)
 	default:

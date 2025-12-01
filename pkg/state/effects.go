@@ -5,6 +5,7 @@ type EffectKind string
 const (
 	DispatchLoadSession  EffectKind = "LoadSession"
 	FetchProjects  EffectKind = "FetchProjects"
+	LoadProjectsBuildIds  EffectKind = "LoadProjectsBuildIds"
 	LoadProjectsBuilds  EffectKind = "LoadProjectsBuilds"
 	CloseProgram  EffectKind = "CloseProgram"
 )
@@ -14,6 +15,11 @@ type Effect struct {
 	Data 		any
 }
 
-type LoadProjectsBuildsData struct {
+type LoadProjectsBuildIdsData struct {
   ProjectName string
+}
+
+type LoadProjectsBuildsData struct {
+	ProjectName string
+  BuildIds []BuildId
 }

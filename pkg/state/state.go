@@ -22,8 +22,8 @@ func NewAppState() AppState {
 		},
 		Data: DataState{
 			Projects:   make([]Project, 0),
+			BuildIds:     make(map[string][]BuildId),
 			Builds:     make(map[string][]Build),
-			BuildPhase: make(map[string]BuildPhase),
 			// LogTail: make(map[string]*RingBuffer),
 		},
 	}
@@ -69,8 +69,8 @@ type UIState struct {
 
 type DataState struct {
 	Projects []Project
-	Builds map[string][]Build
-	BuildPhase map[string]BuildPhase // keyed by buildID
+	BuildIds map[string][]BuildId
+	Builds map[string][]Build 
 	// LogTail map[string]*RingBuffer // keyed by buildID
 }
 

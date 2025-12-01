@@ -86,9 +86,12 @@ func (a *App) runEffects(effects []state.Effect) error {
 			a.disp.DispatchLoadSession(a.ctx)
 		case state.FetchProjects:
 			a.disp.FetchProjects(a.ctx)
+		case state.LoadProjectsBuildIds:
+			d := e.Data.(state.LoadProjectsBuildIdsData)
+			a.disp.LoadProjectsBuildIds(a.ctx, d.ProjectName)
 		case state.LoadProjectsBuilds:
 			d := e.Data.(state.LoadProjectsBuildsData)
-			a.disp.LoadProjectsBuilds(a.ctx, d.ProjectName)
+			a.disp.LoadProjectsBuilds(a.ctx, d.ProjectName, d.BuildIds)
 		case state.CloseProgram:
 			// a.disp.CancelAll() // optional: stop workers
 			a.cancel()

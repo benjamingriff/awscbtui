@@ -12,7 +12,8 @@ type SessionAPI interface {
 
 type CodeBuildAPI interface {
   ListProjects(ctx context.Context) ([]state.Project, error)
-	ListBuildsForProject(ctx context.Context, projectName string) ([]state.Build, error)
+	ListBuildsForProject(ctx context.Context, projectName string) ([]state.BuildId, error)
+	BatchGetBuilds(ctx context.Context, buildIds []state.BuildId) ([]state.Build, error)
 }
 
 type jobKey struct {

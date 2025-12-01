@@ -39,9 +39,16 @@ func (d *Dispatcher) FetchProjects(ctx context.Context) {
 	}()
 }
 
-func (d *Dispatcher) LoadProjectsBuilds(ctx context.Context, projectName string) {
+func (d *Dispatcher) LoadProjectsBuildIds(ctx context.Context, projectName string) {
 	go func() {
 		builds, _ := d.cb.ListBuildsForProject(ctx, projectName)
+		d.msgCh <- state.BuildIdsLoaded{ProjectName: projectName, BuildIds: builds}
+	}()
+}
+
+func (d *Dispatcher) LoadProjectsBuilds(ctx context.Context, projectName string, buildIds []state.BuildId) {
+	go func() {
+		builds, _ := d.cb.BatchGetBuilds(ctx, buildIds)
 		d.msgCh <- state.BuildsLoaded{ProjectName: projectName, Builds: builds}
 	}()
 }
