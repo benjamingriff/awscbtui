@@ -4,9 +4,6 @@ type Intent interface {
 	IntentName() string
 }
 
-type LoadSession struct{}
-func (LoadSession) IntentName() string { return "LoadSession" }
-
 type ViewNext struct{}
 func (ViewNext) IntentName() string { return "ViewNext" }
 
@@ -32,3 +29,9 @@ type Quit struct{}
 func (Quit) IntentName() string {
 	return "Quit"
 }
+
+type LoadSession struct{}
+func (LoadSession) IntentName() string { return "LoadSession" }
+
+type LoadProjects struct{}
+func (LoadProjects) IntentName() string { return "LoadProjects" }

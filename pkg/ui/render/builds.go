@@ -1,6 +1,7 @@
 package render
 
 import (
+	"fmt"
 	"github.com/awesome-gocui/gocui"
 	"github.com/benjamingriff/awscbtui/pkg/state"
 )
@@ -8,7 +9,7 @@ import (
 func RenderBuilds(v *gocui.View, s *state.AppState) {
 	v.FrameRunes = []rune{'─', '│', '╭', '╮', '╰', '╯'}
 	v.Title = "[2]-Builds"
-	v.Wrap = true
+	v.Wrap = false
 	v.Clear()
 
 	v.FrameColor = gocui.ColorDefault
@@ -22,11 +23,9 @@ func RenderBuilds(v *gocui.View, s *state.AppState) {
 		v.Highlight = false
 	}
 
-	// for i, b := range s.Data.Builds {
-	// 	sel := " "
-	// 	if i == s.UI.FocusedBuildIdx {
-	// 		sel = "> "
-	// 	}
-	// 	fmt.Fprintf(v, "%s %s %-7s %s\n", sel, b.BuildID, b.Status, humanDuration(b.Duration))
-	// }
+	for _, builds := range s.Data.Builds {
+		for _, b := range builds {
+			fmt.Fprintf(v, "  Build ID: %s \n", b.ID)
+		}
+	}
 }

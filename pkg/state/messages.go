@@ -15,3 +15,10 @@ type ProjectsLoaded struct {
   Projects []Project
 }
 func (ProjectsLoaded) MessageName() string { return "ProjectsLoaded" }
+
+
+type BuildsLoaded struct {
+	ProjectName string
+  Builds []Build
+}
+func (BuildsLoaded) MessageName() string { return "BuildsLoaded" }

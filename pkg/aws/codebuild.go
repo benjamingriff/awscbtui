@@ -42,3 +42,18 @@ func (c *CodeBuildClient) ListProjects(ctx context.Context) ([]state.Project, er
 	return projects, nil
 }
 
+func (c *CodeBuildClient) ListBuildsForProject(ctx context.Context, projectName string) ([]state.Build, error) {
+	var builds []state.Build
+
+	resp, err := c.cb.ListBuildsForProject(ctx, &codebuild.ListBuildsForProjectInput{
+		ProjectName: &projectName,
+	})
+	if err != nil {
+		return nil, err
+	}
+	for _, name := range resp.Ids {
+		builds = append(builds, state.Build{ID: name})
+	}
+	return builds, nil
+}
+

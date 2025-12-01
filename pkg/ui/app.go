@@ -66,7 +66,8 @@ func (a *App) loop() {
 			a.runEffects(effects)
 			a.requestRender()
 		case msg := <-a.msgCh:
-			state.ReduceMessage(&a.state, msg)
+			effects := state.ReduceMessage(&a.state, msg)
+			a.runEffects(effects)
 			a.requestRender()
 		case <-a.ctx.Done():
 			return
@@ -84,7 +85,10 @@ func (a *App) runEffects(effects []state.Effect) error {
 		case state.DispatchLoadSession:
 			a.disp.DispatchLoadSession(a.ctx)
 		case state.FetchProjects:
-			a.disp.FetchProjects(a.ctx,)
+			a.disp.FetchProjects(a.ctx)
+		case state.LoadProjectsBuilds:
+			d := e.Data.(state.LoadProjectsBuildsData)
+			a.disp.LoadProjectsBuilds(a.ctx, d.ProjectName)
 		case state.CloseProgram:
 			// a.disp.CancelAll() // optional: stop workers
 			a.cancel()

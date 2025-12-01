@@ -24,26 +24,24 @@ func NewDispatcher(
     }
 }
 
-func (d *Dispatcher) FetchProjects(ctx context.Context) error {
-	return nil
-}
-
 func (d *Dispatcher) DispatchLoadSession(ctx context.Context) {
   go func() {
     info, cfg, _ := d.sesh.LoadSession(ctx)
-    // if err != nil {
-    //   d.msgCh <- state.JobError{
-    //     Key:      "session:load",
-    //     ErrKind:  state.ErrKindAuth, // or classify later
-    //     Err:      err,
-    //     UserHint: "Failed to load AWS session. Set AWS_PROFILE or choose a profile.",
-    //   }
-    //   return
-    // }
-    d.msgCh <- state.SessionLoaded{SessionInfo: info}
-
 		d.cb = aws.NewCodeBuildClient(cfg)
+    d.msgCh <- state.SessionLoaded{SessionInfo: info}
+  }()
+}
+
+func (d *Dispatcher) FetchProjects(ctx context.Context) {
+	go func() {
 		projects, _ := d.cb.ListProjects(ctx)
     d.msgCh <- state.ProjectsLoaded{Projects: projects}
-  }()
+	}()
+}
+
+func (d *Dispatcher) LoadProjectsBuilds(ctx context.Context, projectName string) {
+	go func() {
+		builds, _ := d.cb.ListBuildsForProject(ctx, projectName)
+		d.msgCh <- state.BuildsLoaded{ProjectName: projectName, Builds: builds}
+	}()
 }
