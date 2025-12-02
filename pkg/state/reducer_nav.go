@@ -48,10 +48,10 @@ func reduceIdxNext(s *AppState) []Effect {
 			s.UI.FocusedProjectIdx++
 		}
 	case "builds":
-		if len(s.Data.Builds) == 0 {
+		if len(s.Data.Builds[s.UI.SelectedProjectName]) == 0 {
 			return nil
 		}
-		if s.UI.FocusedBuildIdx == len(s.Data.Builds)-1 {
+		if s.UI.FocusedBuildIdx == len(s.Data.Builds[s.UI.SelectedProjectName])-1 {
 			s.UI.FocusedBuildIdx = 0
 		} else {
 			s.UI.FocusedBuildIdx++
@@ -72,11 +72,11 @@ func reduceIdxPrev(s *AppState) []Effect {
 			s.UI.FocusedProjectIdx--
 		}
 	case "builds":
-		if len(s.Data.Builds) == 0 {
+		if len(s.Data.Builds[s.UI.SelectedProjectName]) == 0 {
 			return nil
 		}
 		if s.UI.FocusedBuildIdx == 0 {
-			s.UI.FocusedBuildIdx = len(s.Data.Builds) - 1
+			s.UI.FocusedBuildIdx = len(s.Data.Builds[s.UI.SelectedProjectName]) - 1
 		} else {
 			s.UI.FocusedBuildIdx--
 		}
@@ -86,5 +86,16 @@ func reduceIdxPrev(s *AppState) []Effect {
 
 func reduceRenderHelp(s *AppState) []Effect {
 	s.UI.ShowHelp = true
+	return nil
+}
+
+func reduceMakeSelection(s *AppState) []Effect {
+	switch s.UI.FocusedView {
+	case "projects":
+		s.UI.SelectedProjectIdx = s.UI.FocusedProjectIdx
+		s.UI.SelectedProjectName = s.Data.Projects[s.UI.FocusedProjectIdx].Name
+	case "builds":
+		s.UI.SelectedBuildIdx = s.UI.FocusedBuildIdx
+	}
 	return nil
 }

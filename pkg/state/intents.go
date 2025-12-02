@@ -30,6 +30,11 @@ func (Quit) IntentName() string {
 	return "Quit"
 }
 
+type MakeSelection struct{}
+func (MakeSelection) IntentName() string {
+	return "MakeSelection"
+}
+
 type LoadSession struct{}
 func (LoadSession) IntentName() string { return "LoadSession" }
 

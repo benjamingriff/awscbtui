@@ -19,7 +19,7 @@ func RenderProjects(v *gocui.View, s *state.AppState) {
 
 	v.Clear()
 	for i, p := range s.Data.Projects {
-		if s.UI.SelectedBuildIdx == i {
+		if s.UI.SelectedProjectIdx == i {
 			fmt.Fprintf(v, " \x1b[32m*\x1b[0m %s \n", p.Name)
 		} else {
 			fmt.Fprintf(v, "   %s \n", p.Name)
@@ -29,7 +29,7 @@ func RenderProjects(v *gocui.View, s *state.AppState) {
 	if v.Highlight {
 		v.FrameColor = gocui.ColorGreen
 		idx := s.UI.FocusedProjectIdx
-		_, _ = ensureVisible(v, idx, len(s.Data.Projects))
+		_, _ = ensureVisibleWithHeader(v, idx, len(s.Data.Projects), 0)
 	} else {
 		_ = v.SetCursor(0, 0)
 	}

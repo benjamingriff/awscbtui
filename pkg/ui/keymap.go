@@ -38,7 +38,13 @@ func KeymapDefault(app *App) Keymap {
 
 func KeymapProjects(app *App) Keymap {
   return Keymap{Bindings: []Binding{
-    {Key: gocui.KeySpace, Mod: gocui.ModNone, Handler: intentHandler(app, state.RenderHelp{}) , Help: "select"},
+    {Key: gocui.KeySpace, Mod: gocui.ModNone, Handler: intentHandler(app, state.MakeSelection{}) , Help: "select"},
+  }}
+}
+
+func KeymapBuilds(app *App) Keymap {
+  return Keymap{Bindings: []Binding{
+    {Key: gocui.KeySpace, Mod: gocui.ModNone, Handler: intentHandler(app, state.MakeSelection{}) , Help: "select"},
   }}
 }
 

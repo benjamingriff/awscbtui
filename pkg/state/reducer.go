@@ -14,6 +14,8 @@ func ReduceIntent(s *AppState, i Intent) []Effect {
 		return reduceIdxPrev(s)
 	case RenderHelp:
 		return reduceRenderHelp(s)
+	case MakeSelection:
+		return reduceMakeSelection(s)
 	case Quit:
 		return reduceQuit(s)
 	default:

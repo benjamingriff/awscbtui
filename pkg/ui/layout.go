@@ -21,7 +21,7 @@ func Layout(g *gocui.Gui, app *App) error {
 	}
 
 	buildsH := useY - statusH - logsH
-	split := maxX/3
+	split := maxX/5
 
 	focusedName := getCurrentViewName(g)
 
@@ -56,6 +56,9 @@ func Layout(g *gocui.Gui, app *App) error {
 	if v, err := g.View("builds"); err == nil {
 		if app.state.UI.FocusedView == state.ViewBuilds {
 			_, _ = g.SetCurrentView("builds")
+		}
+		if err := bindKeymaps(g, "builds", KeymapBuilds(app)); err != nil {
+			return err
 		}
 		v.Clear()
 		render.RenderBuilds(v, &app.state)

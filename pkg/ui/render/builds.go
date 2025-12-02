@@ -3,6 +3,7 @@ package render
 import (
 	"fmt"
 	"time"
+	"strconv"
 	"github.com/awesome-gocui/gocui"
 	"github.com/benjamingriff/awscbtui/pkg/state"
 )
@@ -17,22 +18,25 @@ func RenderBuilds(v *gocui.View, s *state.AppState) {
 	v.FgColor = gocui.ColorDefault
 	v.SelBgColor = gocui.ColorGreen
 
-	if s.UI.FocusedView == "builds" {
-		v.Highlight = true
-		v.FrameColor = gocui.ColorGreen
-	} else {
-		v.Highlight = false
-	}
+	fmt.Fprintln(v, " ID                                                       | BUILD NUMBER | STATUS       | DURATION | ")
+  fmt.Fprintln(v, " -------------------------------------------------------- | ------------ | ------------ | -------- | ")
 
-	fmt.Fprintln(v, " ID                                 | STATUS       | DURATION | ")
-  fmt.Fprintln(v, " ---------------------------------- | ------------ | -------- | ")
+	v.Highlight = (s.UI.FocusedView == state.ViewBuilds)
 
-	for _, builds := range s.Data.Builds {
+	builds := s.Data.Builds[s.UI.SelectedProjectName]
 		for _, b := range builds {
-			id := right(b.ID, 34)
+			id := right(b.ID, 56)
+			bn := strconv.FormatInt(b.BuildNumber, 12)
 			dur := humanDuration(buildDuration(b.StartTime, b.EndTime, b.Status))
-			fmt.Fprintf(v, " %-34s   %-12s  %8s\n", id, colorStatus(b.Status), dur)
+			fmt.Fprintf(v, " %-56s   %-12s   %-12s   %8s\n", id, bn, colorStatus(b.Status), dur)
 		}
+
+	if v.Highlight {
+		v.FrameColor = gocui.ColorGreen
+		idx := s.UI.FocusedBuildIdx
+		_, _ = ensureVisibleWithHeader(v, idx, len(builds), 2)
+	} else {
+		_ = v.SetCursor(0, 0)
 	}
 }
 
