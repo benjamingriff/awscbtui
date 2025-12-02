@@ -87,6 +87,7 @@ func toStateBuild(b cbtypes.Build) state.Build {
 
   return state.Build{
     ID:        sdkaws.ToString(b.Id),
+		BuildNumber: sdkaws.ToInt64(b.BuildNumber),
     ARN:       sdkaws.ToString(b.Arn),
     Project:   sdkaws.ToString(b.ProjectName),
     Status:    string(b.BuildStatus),
