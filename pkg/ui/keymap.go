@@ -63,3 +63,4 @@ func bindKeymaps(g *gocui.Gui, view string, keymap Keymap) error {
   }
   return nil
 }
+

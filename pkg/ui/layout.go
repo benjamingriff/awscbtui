@@ -75,13 +75,6 @@ func Layout(g *gocui.Gui, app *App) error {
 		render.RenderLogs(v, &app.state)
 	}
 
-	if _, err := g.SetView("cmds", 0, statusH+buildsH+logsH, maxX-1, maxY, 0); err != nil && err != gocui.ErrUnknownView {
-		return err
-	}
-	if v, err := g.View("cmds"); err == nil {
-		v.Clear()
-		render.RenderCmds(v, &app.state)
-	}
 
 	if app.state.UI.ShowHelp {
 		if _, err := g.SetView("help", maxX/4, maxY/6, (maxX/4)*3, (maxY/6)*5, 0); err != nil && err != gocui.ErrUnknownView {
@@ -102,6 +95,24 @@ func Layout(g *gocui.Gui, app *App) error {
 		}
 	}
 
+	if _, err := g.SetView("cmds", 0, statusH+buildsH+logsH, maxX-1, maxY, 0); err != nil && err != gocui.ErrUnknownView {
+		return err
+	}
+	if v, err := g.View("cmds"); err == nil {
+		v.Clear()
+		if app.state.UI.FocusedView == state.ViewStatus {
+			render.RenderCmds(v, &app.state, CmdsStatus())
+		} else if app.state.UI.FocusedView == state.ViewProjects {
+			render.RenderCmds(v, &app.state, CmdsProjects())
+		} else if app.state.UI.FocusedView == state.ViewBuilds {
+			render.RenderCmds(v, &app.state, CmdsBuilds())
+		} else if app.state.UI.FocusedView == state.ViewLogs {
+			render.RenderCmds(v, &app.state, CmdsLogs())
+		} else if app.state.UI.FocusedView == state.ViewHelp {
+			render.RenderCmds(v, &app.state, CmdsHelp())
+		}
+	}
+
 	return nil
 }
 
@@ -114,4 +125,42 @@ func getCurrentViewName(g *gocui.Gui) string {
 		focusedName = "" 
 	}
 	return focusedName
+}
+
+func CmdsStatus() state.CmdHints {
+  return state.CmdHints{Cmds: []state.Cmd{
+		{Text: "Back", Key: "h"},
+		{Text: "Down", Key: "j"},
+		{Text: "Up", Key: "k"},
+		{Text: "Next", Key: "l"},
+		{Text: "Enter", Key: "<space>"},
+		{Text: "Keymaps", Key: "?"},
+  }}
+}
+
+func CmdsProjects() state.CmdHints {
+  return state.CmdHints{Cmds: []state.Cmd{
+		{Text: "Enter", Key: "<space>"},
+		{Text: "Keymaps", Key: "?"},
+  }}
+}
+
+func CmdsBuilds() state.CmdHints {
+	return state.CmdHints{Cmds: []state.Cmd{
+		{Text: "Enter", Key: "<space>"},
+		{Text: "Keymaps", Key: "?"},
+	}}
+}
+
+func CmdsLogs() state.CmdHints {
+	return state.CmdHints{Cmds: []state.Cmd{
+		{Text: "Enter", Key: "<space>"},
+		{Text: "Keymaps", Key: "?"},
+	}}
+}
+
+func CmdsHelp() state.CmdHints {
+	return state.CmdHints{Cmds: []state.Cmd{
+		{Text: "Exit", Key: "q"},
+	}}
 }

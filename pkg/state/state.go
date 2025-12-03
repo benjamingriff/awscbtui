@@ -141,3 +141,12 @@ type SessionInfo struct {
   ExpiresAt *time.Time
   ErrorHint string
 }
+
+type Cmd struct {
+	Text string
+	Key string
+}
+
+type CmdHints struct {
+	Cmds []Cmd
+}
